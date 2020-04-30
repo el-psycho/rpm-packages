@@ -1,0 +1,16 @@
+FROM fedora:32
+
+USER root
+
+VOLUME ["/root/rpmbuild"]
+
+RUN true \
+  && dnf install -y --setopt=skip_missing_names_on_install=False \
+    git \
+    rpm-build \
+    rpmlint \
+    rsync \
+    ShellCheck \
+  && dnf clean all \
+  && rm -rf /var/cache/dnf
+
