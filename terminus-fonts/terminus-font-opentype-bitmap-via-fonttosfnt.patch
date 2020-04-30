@@ -1,0 +1,57 @@
+Index: terminus-font-4.48/Makefile
+===================================================================
+--- terminus-font-4.48.orig/Makefile
++++ terminus-font-4.48/Makefile
+@@ -1,3 +1,4 @@
++INSTALL = install
+ INT = python3
+ EXT = py
+ BIN = ./bin
+@@ -5,8 +6,11 @@ BIN = ./bin
+ UCS2ANY = $(INT) $(BIN)/ucstoany.$(EXT)
+ BDF2PSF = $(INT) $(BIN)/bdftopsf.$(EXT)
+ UCS2X11	= $(INT) $(BIN)/ucstoany.$(EXT) -f
++BDF2OTB = $(INT) $(BIN)/bitmapfonts2otb.$(EXT)
+ BDF2PCF	= bdftopcf
+ 
++BDF = ter-u12b.bdf  ter-u14v.bdf  ter-u18b.bdf  ter-u22b.bdf  ter-u28b.bdf ter-u12n.bdf  ter-u16b.bdf  ter-u18n.bdf  ter-u22n.bdf  ter-u28n.bdf ter-u14b.bdf  ter-u16n.bdf  ter-u20b.bdf  ter-u24b.bdf  ter-u32b.bdf ter-u14n.bdf  ter-u16v.bdf  ter-u20n.bdf  ter-u24n.bdf  ter-u32n.bdf
++
+ REG_8859_1  = ISO8859 1
+ REG_8859_2  = ISO8859 2
+ REG_8859_5  = ISO8859 5
+@@ -211,6 +215,27 @@ install-psf-ref: README
+ uninstall-psf-ref:
+ 	rm -f $(DESTDIR)$(psfref)
+ 
++# OpenType Bitmap fonts (OTB)
++
++OTB = Terminus.otb Terminus-Bold.otb
++
++$(OTB): $(BDF)
++	$(BDF2OTB) $(BDF)
++
++.PHONY: otb
++otb: $(OTB)
++
++otbdir = $(x11dir)
++
++.PHONY: install-otb
++install-otb: $(OTB)
++	$(INSTALL) -m 0755 -d "$(DESTDIR)$(otbdir)"
++	$(INSTALL) -m 0644 -t "$(DESTDIR)$(otbdir)" $(OTB)
++
++.PHONY: uninstall-otb
++uninstall-otb:
++	@set -x; if test -d "$(DESTDIR)$(otbdir)"; then cd "$(DESTDIR)$(otbdir)" && rm -f $(OTB); fi
++
+ # X11 Window System
+ 
+ X11_8859_1  = uni/x11gr.uni uni/ascii-h.uni uni/win-1252.uni
+@@ -291,6 +316,6 @@ uninstall-pcf-8bit:
+ # Cleanup
+ 
+ clean:
+-	rm -f $(PSF) $(PSF_VGAW) $(PCF) $(PCF_8BIT) $(FNT)
++	rm -f $(PSF) $(PSF_VGAW) $(PCF) $(PCF_8BIT) $(FNT) $(OTB)
+ 
+ .PHONY: all install uninstall fontdir psf install-psf uninstall-psf psf-vgaw install-psf-vgaw uninstall-psf-vgaw install-psf-ref uninstall-psf-ref pcf install-pcf uninstall-pcf pcf-8bit install-pcf-8bit uninstall-pcf-8bit clean
