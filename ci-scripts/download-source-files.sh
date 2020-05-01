@@ -1,8 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
-dir=$(realpath "$(dirname $(realpath $0))/..")
-cd "$dir" || { echo "Could not cd into $dir" >&2; exit 1; }
+script_path=$(realpath "$0")
+script_dir=$(dirname "$script_path")
+repo_path="$script_dir/.."
+
+cd "$repo_path" || { echo "Could not cd into $repo_path" >&2; exit 1; }
 
 DIFF_COMPARE='master..HEAD'
 
@@ -34,15 +37,15 @@ if [ ! "$changed_spec_files" ]; then
   echo "WARNING: No changes found for any spec files. Have you commited your changes?"
 fi
 
-for specfile in $changed_spec_files; do
-  specFileDirname=$(dirname "$specfile")
-  rsync "$specFileDirname"/ --exclude '*.spec' "$HOME/rpmbuild/SOURCES/"
+for spec_file in $changed_spec_files; do
+  spec_dirname=$(dirname "$spec_file")
+  rsync -r "$spec_dirname"/ --exclude '*.spec' "$HOME/rpmbuild/SOURCES/"
 
-  if grep -qi 'source[0-9]\?:' "$specfile"; then
-    echo "==========  Downloading sources for $specfile =========="
+  if grep -qi 'source[0-9]\?:' "$spec_file"; then
+    echo "==========  Downloading sources for $spec_file =========="
   fi
 
-  spectool --get-files --all --sourcedir "$specfile"
+  spectool --get-files --all --sourcedir "$spec_file"
   echo
 done
 

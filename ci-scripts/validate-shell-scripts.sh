@@ -1,6 +1,10 @@
 #!/bin/bash
-dir=$(realpath "$(dirname $(realpath $0))/..")
-cd "$dir" || { echo "Could not cd into $dir" >&2; exit 1; }
+
+script_path=$(realpath "$0")
+script_dir=$(dirname "$script_path")
+repo_path="$script_dir/.."
+
+cd "$repo_path" || { echo "Could not cd into $repo_path" >&2; exit 1; }
 
 scripts=$(find . -type f -iname '*\.sh')
 [ ! "$scripts" ] && { echo 'No shell scripts found'; exit 0; }
@@ -20,12 +24,12 @@ SHELLCHECK="$(
 )"
 
 echo "========================================================================"
-echo " Checking bash scripts with shellcheck and using the following options:"
+echo " Checking bash scripts with shellcheck with the following options:"
 echo "$SHELLCHECK" | tr ' ' '\n' | grep -v shellcheck
 echo "========================================================================"
 echo
 
-oldIFS="$IFS"
+old_IFS="$IFS"
 IFS=$'\n'
 errors=0
 
@@ -45,6 +49,6 @@ for script in $scripts; do
   fi
 done
 
-IFS="$oldIFS"
+IFS="$old_IFS"
 exit $errors
 

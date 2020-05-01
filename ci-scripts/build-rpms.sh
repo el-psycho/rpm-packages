@@ -1,8 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
-dir=$(realpath "$(dirname $(realpath $0))/..")
-cd "$dir" || { echo "Could not cd into $dir" >&2; exit 1; }
+script_path=$(realpath "$0")
+script_dir=$(dirname "$script_path")
+repo_path="$script_dir/.."
+
+cd "$repo_path" || { echo "Could not cd into $repo_path" >&2; exit 1; }
 
 SUDO=""
 [ "$(id -un)" != "root" ] && SUDO='sudo'
@@ -34,19 +37,19 @@ changed_spec_files=$(
 )
 
 if [ ! "$changed_spec_files" ]; then
-  echo "WARNING: No changes found for any spec files. Have you commited your changes?"
+  echo "WARNING: No committed changes found for any spec files."
 fi
 
-for specfile in $changed_spec_files; do
-  echo -e "=============== Building $specfile ===============\n"
+for spec_file in $changed_spec_files; do
+  echo -e "=============== Building $spec_file ===============\n"
 
-  if grep -qi 'BuildRequires:' "$specfile"; then
+  if grep -qi 'BuildRequires:' "$spec_file"; then
     echo "Downloading build requirements:"
     echo "-------------------------------"
 
     pkgs=$(
-      grep '^BuildRequires:' "$specfile" |\
-      tr -s ' ' |\
+      grep '^BuildRequires:' "$spec_file" |\
+      tr -s '\t' ' ' |\
       cut -d ' ' -f 2 |\
       grep -v '^/' |\
       xargs -n 1 rpm --eval |\
@@ -56,7 +59,7 @@ for specfile in $changed_spec_files; do
     [ "$pkgs" ] && $SUDO yum install -y $pkgs
   fi
 
-  rpmbuild -bb --clean "$specfile"
+  rpmbuild -bb --clean "$spec_file"
   echo
 done
 

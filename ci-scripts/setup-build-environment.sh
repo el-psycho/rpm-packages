@@ -1,8 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
-dir=$(realpath "$(dirname $(realpath $0))/..")
-cd "$dir" || { echo "Could not cd into $dir" >&2; exit 1; }
+script_path=$(realpath "$0")
+script_dir=$(dirname "$script_path")
+repo_path="$script_dir/.."
+
+cd "$repo_path" || { echo "Could not cd into $repo_path" >&2; exit 1; }
 
 SUDO=""
 [ "$USER" != "root" ] && SUDO='sudo'
