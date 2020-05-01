@@ -8,6 +8,7 @@ RUN true \
   && dnf install -y --setopt=skip_missing_names_on_install=False \
     git \
     rpm-build \
+    rpmdevtools \
     rpmlint \
     rsync \
     ShellCheck \
