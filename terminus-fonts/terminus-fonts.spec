@@ -1,5 +1,4 @@
 %global fontname terminus
-%global origname %{fontname}-fonts
 %global fontconf 63-%{fontname}.conf
 
 %global archivename terminus-font-%{version}
@@ -49,43 +48,38 @@ plus CRT VGA-bold for 8x14 and 8x16.
 %global evr %{version}-%{release}
 %endif
 
-Name:		%{origname}-td1
+Name:		%{fontname}-fonts
 Version:	4.48
-Release:	5%{?dist}
+Release:	90kc%{?dist}
 Summary:	Clean fixed width font
 
 # The source package also contains a few GPLv2+ build helper scripts.
 License:	OFL
 URL:		http://terminus-font.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/terminus-font/%{archivename}.tar.gz
-Source1:	%{origname}-fontconfig.conf
+Source1:	%{name}-fontconfig.conf
 Source2:	bitmapfonts2otb.py
-Source10:	%{origname}-console.README.fedora
-Source20:	%{origname}.README.fedora
-Source21:	%{origname}.Xresources.example
+Source10:	%{name}-console.README.fedora
+Source20:	%{name}.README.fedora
+Source21:	%{name}.Xresources.example
 
 Patch42:	terminus-font-opentype-bitmap-via-fonttosfnt.patch
 
 BuildArch:	noarch
-BuildRequires:	fontpackages-devel >= 1.18
+BuildRequires: make
+BuildRequires:	fontpackages-devel
 Requires:	fontpackages-filesystem
 
-Obsoletes:	%{origname}-x11 <= %{evr}
-Provides:	%{name}-x11 = %{evr}
-Obsoletes:	%{origname} <= %{evr}
-Provides:	%{name} = %{evr}
+Obsoletes:	terminus-font-x11 < 4.28-2
+Provides:	terminus-font-x11 = %{evr}
 
 # For generating *.otb (OpenType bitmap font)
-BuildRequires:	/usr/bin/ftdump
-BuildRequires:	/usr/bin/fonttosfnt
+BuildRequires:	freetype-demos
 BuildRequires:	python3
-
-BuildRequires:	python3 >= 3.5.0
-BuildRequires:	/usr/bin/bdftopcf
-BuildRequires:	/usr/bin/mkfontdir
+BuildRequires:	xorg-x11-font-utils
 
 %ifnarch %{grub2_exclude_arches}
-BuildRequires:	/usr/bin/grub2-mkfont
+BuildRequires:	grub2-tools-extra
 %endif
 
 %description
@@ -99,8 +93,8 @@ X11 PCF bitmap fonts for compatibility with older software.
 %package console
 Requires:	kbd
 Summary:	Clean fixed width font (console version)
-Obsoletes:	%{origname}-console <= %{evr}
-Provides:	%{name}-console = %{evr}
+Obsoletes:	terminus-font-console < 4.28-2
+Provides:	terminus-font-console = %{evr}
 License:	OFL
 
 %description console
@@ -113,8 +107,6 @@ This package contains the fonts to use with the Linux console.
 %package grub2
 Requires:	grub2-common
 Summary:	Clean fixed width font (grub2 version)
-Obsoletes:	%{origname}-grub2 <= %{evr}
-Provides:	%{name}-grub2 = %{evr}
 License:	OFL
 
 %description grub2
@@ -466,6 +458,7 @@ ln -s %{_fontdir} %{buildroot}%{catalog}/%{fontname}:unscaled
 %{consolefontdir}/ter-v28n.psf.gz
 %{consolefontdir}/ter-v32b.psf.gz
 %{consolefontdir}/ter-v32n.psf.gz
+
 
 %ifnarch %{grub2_exclude_arches}
 %files grub2
