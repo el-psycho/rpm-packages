@@ -24,13 +24,13 @@ chmod +x helm3
 %build
 
 %install
-mkdir -p %{buildroot}/usr/bin
+mkdir -p %{buildroot}/usr/local/bin
 mkdir -p %{buildroot}/etc/profile.d
-cp helm3 %{buildroot}/usr/bin/
+cp helm3 %{buildroot}/usr/local/bin/
 cp helm3_completion.sh %{buildroot}/etc/profile.d/
 
 
 %files
-%attr(0755, root, root) /usr/bin/helm3
+%attr(0755, root, root) /usr/local/bin/helm3
 %attr(0644, root, root) /etc/profile.d/helm3_completion.sh
 
