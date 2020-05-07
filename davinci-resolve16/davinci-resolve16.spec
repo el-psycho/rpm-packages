@@ -2,14 +2,15 @@
 %global __os_install_post %{nil}
 %global _python_bytecompile_errors_terminate_build 0
 
+%define full_version 16.2.1
 %define major_version 16
 
 Name:           davinci-resolve%{major_version}
-Version:        16.2.1
+Version:        %{full_version}
 Release:        1%{?dist}
 Summary:        Davinci Resolve %{major_version}
 License:        Proprietary
-Source0:        http://minio.local:9000/rpm-sources/davinci-resolve/DaVinci_Resolve_%{version}_Linux.zip
+Source0:        https://minio.infra.local:9000/rpm-sources/davinci-resolve/DaVinci_Resolve_%{version}_Linux.zip
 ExclusiveArch:  x86_64
 AutoReqProv:    no
 BuildRequires:  sed
